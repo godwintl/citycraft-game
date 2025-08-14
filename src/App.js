@@ -101,8 +101,6 @@ const useSounds = () => {
         synth?.triggerAttackRelease(["E4", "G4", "B4", "E5"], "4n", now + 0.2);
         synth?.triggerAttackRelease(["G4", "B4", "D5", "G5"], "2n", now + 0.4);
         break;
-      default:
-        break;
     }
   };
   
@@ -211,7 +209,7 @@ function terrainClass(t) {
   }
 }
 
-function CityCraft() {
+export default function CityCraft() {
   const [grid, setGrid] = useState(Array(GRID * GRID).fill(null));
   const [selected, setSelected] = useState(null);
   const [budget, setBudget] = useState(START_BUDGET);
@@ -349,7 +347,7 @@ function CityCraft() {
       setPhase("result");
       setShowResult(true);
     }
-  }, [turnsLeft, budget, targetsMet, phase, playSound]);
+  }, [turnsLeft, budget, targetsMet, phase]);
 
   const handlePasswordSubmit = () => {
     if (passwordInput.toLowerCase() === "hems") {
@@ -748,6 +746,3 @@ function CityCraft() {
     </div>
   );
 }
-
-// Export the component as default
-export default CityCraft;
