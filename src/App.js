@@ -1,7 +1,6 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, Coins, Undo2, Play, Info, Target, RefreshCcw, ListChecks, X, AlertCircle, Lock, MessageSquare, Sparkles } from "lucide-react";
-import * as Tone from 'tone';
 
 /**
  * CityCraft — Built Environment (Enhanced Graphics Edition)
@@ -56,52 +55,12 @@ function neighbours(idx) {
 
 function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
 
-// Sound system
+// Simplified sound system (no Tone.js to avoid errors)
 const useSounds = () => {
-  const synthRef = useRef(null);
-  
-  useEffect(() => {
-    synthRef.current = new Tone.PolySynth(Tone.Synth, {
-      oscillator: { type: "triangle" },
-      envelope: { attack: 0.01, decay: 0.1, sustain: 0.3, release: 0.5 }
-    }).toDestination();
-    
-    return () => {
-      synthRef.current?.dispose();
-    };
-  }, []);
-  
   const playSound = async (type) => {
-    if (Tone.context.state !== 'running') {
-      await Tone.start();
-    }
-    
-    const synth = synthRef.current;
-    const now = Tone.now();
-    
-    switch(type) {
-      case 'place':
-        // Construction sound - ascending hammering effect
-        synth?.triggerAttackRelease("C3", "32n", now);
-        synth?.triggerAttackRelease("E3", "32n", now + 0.05);
-        synth?.triggerAttackRelease("G3", "32n", now + 0.1);
-        synth?.triggerAttackRelease("C4", "16n", now + 0.15);
-        break;
-      case 'remove':
-        synth?.triggerAttackRelease(["G3", "E3"], "16n", now);
-        break;
-      case 'select':
-        synth?.triggerAttackRelease("C5", "32n", now);
-        break;
-      case 'error':
-        synth?.triggerAttackRelease(["F3", "F#3"], "8n", now);
-        break;
-      case 'win':
-        synth?.triggerAttackRelease(["C4", "E4", "G4", "C5"], "4n", now);
-        synth?.triggerAttackRelease(["E4", "G4", "B4", "E5"], "4n", now + 0.2);
-        synth?.triggerAttackRelease(["G4", "B4", "D5", "G5"], "2n", now + 0.4);
-        break;
-    }
+    // Sound disabled to avoid Tone.js import errors
+    // Game works perfectly without sound effects
+    return;
   };
   
   return { playSound };
@@ -209,7 +168,7 @@ function terrainClass(t) {
   }
 }
 
-export default function CityCraft() {
+function CityCraft() {
   const [grid, setGrid] = useState(Array(GRID * GRID).fill(null));
   const [selected, setSelected] = useState(null);
   const [budget, setBudget] = useState(START_BUDGET);
@@ -347,7 +306,7 @@ export default function CityCraft() {
       setPhase("result");
       setShowResult(true);
     }
-  }, [turnsLeft, budget, targetsMet, phase]);
+  }, [turnsLeft, budget, targetsMet, phase, playSound]);
 
   const handlePasswordSubmit = () => {
     if (passwordInput.toLowerCase() === "hems") {
@@ -746,3 +705,6 @@ export default function CityCraft() {
     </div>
   );
 }
+
+// Export the component as default
+export default CityCraft;
